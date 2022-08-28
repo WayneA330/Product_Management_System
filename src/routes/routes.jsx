@@ -1,10 +1,14 @@
 import { lazy } from "react";
 import { useRoutes } from "react-router-dom";
 
-const Example = lazy(() => import("../pages/Example"));
+const Home = lazy(() => import("../pages/Home"));
+const Dashboard = lazy(() => import("../pages/Dashboard"));
 
 const PublicRoutes = () => {
-  const routes = useRoutes([{ path: "/", element: <Example /> }]);
+  const routes = useRoutes([
+    { path: "/", element: <Home /> },
+    { path: "/dashboard", element: <Dashboard /> },
+  ]);
 
   return routes;
 };
