@@ -1,7 +1,7 @@
-const example = require("./methods/example");
+const addCompany = require("./methods/addCompany");
 
 const AppController = {
-  example,
+  addCompany,
 };
 
 module.exports = AppController;
