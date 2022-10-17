@@ -6,7 +6,7 @@ const addCompany = async (req, res) => {
       name: req?.body?.name,
       address: req?.body?.address,
       phone_no: req?.body?.phone_no,
-      is_active: req?.body?.is_active,
+      is_active: 1,
     });
 
     res.status(200).send({
