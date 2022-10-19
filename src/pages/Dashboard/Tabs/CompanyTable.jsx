@@ -3,6 +3,9 @@ import { Button, Box, IconButton, Popover } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { Done, Close, MoreVert, Block } from "@mui/icons-material";
 import { Edit } from "@mui/icons-material";
+import { useQuery } from "react-query";
+import { getData } from "../../../api/methods";
+import api from "../../../api/api";
 
 const CompanyTable = ({ setOpenAddCompanyModal }) => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -17,6 +20,19 @@ const CompanyTable = ({ setOpenAddCompanyModal }) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const { data } = useQuery(
+    ["companyData"],
+    () => getData({ url: api.GET_COMPANY_DATA }),
+    {
+      onSuccess: (data) => {
+        // console.log(data);
+      },
+      onError: (err) => {
+        // console.log(err);
+      },
+    }
+  );
 
   // Table Columns
   const columns = [
@@ -64,6 +80,7 @@ const CompanyTable = ({ setOpenAddCompanyModal }) => {
               vertical: "bottom",
               horizontal: "left",
             }}
+            elevation={1}
           >
             <Box sx={{ display: "flex", flexDirection: "column" }}>
               <Button
@@ -91,17 +108,6 @@ const CompanyTable = ({ setOpenAddCompanyModal }) => {
     },
   ];
 
-  const rows = [
-    { id: 1, name: "Snow", address: "Jon", phone_no: 35, is_active: true },
-    {
-      id: 3,
-      name: "Lannister",
-      address: "Cersei",
-      phone_no: 42,
-      is_active: true,
-    },
-  ];
-
   return (
     <Box margin={3}>
       <Box display="flex" justifyContent="flex-end" marginBottom={2}>
@@ -113,13 +119,16 @@ const CompanyTable = ({ setOpenAddCompanyModal }) => {
         </Button>
       </Box>
       <Box sx={{ height: 400, width: "100%" }}>
-        <DataGrid
-          columns={columns}
-          rows={rows}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
-          disableSelectionOnClick
-        />
+        {data && (
+          <DataGrid
+            columns={columns}
+            rows={data}
+            getRowId={(row) => row.company_id}
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+            disableSelectionOnClick
+          />
+        )}
       </Box>
     </Box>
   );

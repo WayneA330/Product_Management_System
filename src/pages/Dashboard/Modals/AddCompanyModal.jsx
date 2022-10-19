@@ -6,10 +6,12 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import { postData } from "../../../api/methods";
 import api from "../../../api/api";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 
 const AddCompanyModal = ({ open, handleClose }) => {
   const [error, setError] = useState(false);
+
+  const queryClient = useQueryClient();
 
   const validationSchema = yup.object({
     name: yup.string().required("Company name is required"),
@@ -28,6 +30,7 @@ const AddCompanyModal = ({ open, handleClose }) => {
       onSuccess: (data) => {
         handleClose();
         setError(false);
+        queryClient.invalidateQueries("companyData");
       },
       onError: (error) => {
         setError(true);
