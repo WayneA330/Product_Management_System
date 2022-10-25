@@ -6,6 +6,7 @@ import {
   Tabs,
   Tab,
   Box,
+  Typography,
 } from "@mui/material";
 import { Store, Category } from "@mui/icons-material";
 import AddCompanyModal from "./Modals/AddCompanyModal";
@@ -18,6 +19,8 @@ const Dashboard = () => {
   const [openAddProductModal, setOpenAddProductModal] = useState(false);
   const [openAddCompanyModal, setOpenAddCompanyModal] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
+  const [edit, setEdit] = useState(false);
+  const [editRowData, setEditRowData] = useState(null);
 
   const handleCloseProduct = () => setOpenAddProductModal(false);
   const handleCloseCompany = () => setOpenAddCompanyModal(false);
@@ -46,12 +49,17 @@ const Dashboard = () => {
   ];
 
   const tabsContent = [
-    <CompanyTable setOpenAddCompanyModal={setOpenAddCompanyModal} />,
+    <CompanyTable
+      setOpenAddCompanyModal={setOpenAddCompanyModal}
+      setEdit={setEdit}
+      setEditRowData={setEditRowData}
+    />,
     <ProductTable />,
   ];
 
   return (
     <>
+      {/* Tabs */}
       <Box sx={{ marginTop: "15px" }}>
         <Tabs value={activeTab} onChange={handleTabChange} variant="fullWidth">
           <Tab label="Companies" />
@@ -59,6 +67,8 @@ const Dashboard = () => {
         </Tabs>
         {tabsContent[activeTab]}
       </Box>
+
+      {/* SpeedDial */}
       <SpeedDial
         ariaLabel="SpeedDial basic example"
         sx={{ position: "absolute", bottom: 16, right: 16 }}
@@ -77,6 +87,10 @@ const Dashboard = () => {
       <AddCompanyModal
         open={openAddCompanyModal}
         handleClose={handleCloseCompany}
+        edit={edit}
+        editRowData={editRowData}
+        setEdit={setEdit}
+        setEditRowData={setEditRowData}
       />
       <AddProductModal
         open={openAddProductModal}

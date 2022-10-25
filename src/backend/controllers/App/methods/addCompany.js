@@ -10,12 +10,12 @@ const addCompany = async (req, res) => {
     });
 
     res.status(200).send({
-      message: "Example successful!",
+      message: "Added company successfully!",
       payload: req?.body,
     });
   } catch (err) {
     res.status(404).send({
-      message: "Example failed!",
+      message: "Error occured when adding when adding company!",
       payload: err,
     });
   }

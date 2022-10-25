@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import { Button, Box, IconButton, Popover } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import { Done, Close, MoreVert, Block } from "@mui/icons-material";
-import { Edit } from "@mui/icons-material";
-import { useQuery } from "react-query";
-import { getData } from "../../../api/methods";
+import { Done, Close, MoreVert, Block, Edit } from "@mui/icons-material";
+import { useQuery, useMutation, useQueryClient } from "react-query";
+import { getData, postData } from "../../../api/methods";
 import api from "../../../api/api";
 
-const CompanyTable = ({ setOpenAddCompanyModal }) => {
+const CompanyTable = ({ setOpenAddCompanyModal, setEdit, setEditRowData }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [rowID, setRowID] = useState();
+  const [isActive, setIsActive] = useState();
 
   const open = Boolean(anchorEl);
 
@@ -21,6 +21,9 @@ const CompanyTable = ({ setOpenAddCompanyModal }) => {
     setAnchorEl(null);
   };
 
+  const queryClient = useQueryClient();
+
+  // Fetch the company data
   const { data } = useQuery(
     ["companyData"],
     () => getData({ url: api.GET_COMPANY_DATA }),
@@ -30,6 +33,38 @@ const CompanyTable = ({ setOpenAddCompanyModal }) => {
       },
       onError: (err) => {
         // console.log(err);
+      },
+    }
+  );
+
+  // Deactivate Mutation
+  const deactivateCompany = useMutation(
+    (id) => {
+      return postData({ url: api.DEACTIVATE_COMPANY(id), body: {} });
+    },
+    {
+      onSuccess: (data) => {
+        handleClose();
+        queryClient.invalidateQueries("companyData");
+      },
+      onError: (error) => {
+        // console.log(error);
+      },
+    }
+  );
+
+  // Activate Mutation
+  const activateCompany = useMutation(
+    (id) => {
+      return postData({ url: api.ACTIVATE_COMPANY(id), body: {} });
+    },
+    {
+      onSuccess: (data) => {
+        handleClose();
+        queryClient.invalidateQueries("companyData");
+      },
+      onError: (error) => {
+        // console.log(error);
       },
     }
   );
@@ -64,7 +99,9 @@ const CompanyTable = ({ setOpenAddCompanyModal }) => {
           <IconButton
             onClick={(e) => {
               handleClick(e);
-              setRowID(params);
+              setRowID(params.id);
+              setIsActive(params.row.is_active);
+              setEditRowData(params.row);
             }}
           >
             <MoreVert />
@@ -75,6 +112,8 @@ const CompanyTable = ({ setOpenAddCompanyModal }) => {
             onClose={() => {
               handleClose();
               setRowID();
+              setEdit(false);
+              setEditRowData(null);
             }}
             anchorOrigin={{
               vertical: "bottom",
@@ -87,8 +126,13 @@ const CompanyTable = ({ setOpenAddCompanyModal }) => {
                 variant="text"
                 startIcon={<Block />}
                 sx={{ color: "#000" }}
+                onClick={() => {
+                  isActive
+                    ? deactivateCompany.mutate(rowID)
+                    : activateCompany.mutate(rowID);
+                }}
               >
-                Deactivate
+                {isActive ? "Deactivate" : "Activate"}
               </Button>
               <Button
                 variant="text"
@@ -98,8 +142,13 @@ const CompanyTable = ({ setOpenAddCompanyModal }) => {
                   justifyContent: "flex-start",
                   color: "#000",
                 }}
+                onClick={() => {
+                  setEdit(true);
+                  setOpenAddCompanyModal(true);
+                  handleClose();
+                }}
               >
-                Edit {params.row.id}
+                Edit
               </Button>
             </Box>
           </Popover>
@@ -118,14 +167,14 @@ const CompanyTable = ({ setOpenAddCompanyModal }) => {
           Add Company
         </Button>
       </Box>
-      <Box sx={{ height: 400, width: "100%" }}>
+      <Box sx={{ height: 423, width: "100%" }}>
         {data && (
           <DataGrid
             columns={columns}
             rows={data}
             getRowId={(row) => row.company_id}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
+            pageSize={6}
+            rowsPerPageOptions={[6]}
             disableSelectionOnClick
           />
         )}

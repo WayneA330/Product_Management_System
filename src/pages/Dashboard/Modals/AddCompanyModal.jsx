@@ -8,10 +8,23 @@ import { postData } from "../../../api/methods";
 import api from "../../../api/api";
 import { useMutation, useQueryClient } from "react-query";
 
-const AddCompanyModal = ({ open, handleClose }) => {
+const AddCompanyModal = ({
+  open,
+  handleClose,
+  edit,
+  editRowData,
+  setEdit,
+  setEditRowData,
+}) => {
   const [error, setError] = useState(false);
 
   const queryClient = useQueryClient();
+
+  const resetState = () => {
+    setEdit(false);
+    setEditRowData(null);
+    setError(false);
+  };
 
   const validationSchema = yup.object({
     name: yup.string().required("Company name is required"),
@@ -22,6 +35,7 @@ const AddCompanyModal = ({ open, handleClose }) => {
       .required("Phone Number is required"),
   });
 
+  // Add Company Mutation
   const addCompany = useMutation(
     (data) => {
       return postData({ url: api.ADD_COMPANY, body: data });
@@ -29,7 +43,27 @@ const AddCompanyModal = ({ open, handleClose }) => {
     {
       onSuccess: (data) => {
         handleClose();
-        setError(false);
+        resetState();
+        queryClient.invalidateQueries("companyData");
+      },
+      onError: (error) => {
+        setError(true);
+      },
+    }
+  );
+
+  // Edit Company Mutation
+  const editCompany = useMutation(
+    (data) => {
+      return postData({
+        url: api.EDIT_COMPANY(editRowData?.company_id),
+        body: data,
+      });
+    },
+    {
+      onSuccess: (data) => {
+        handleClose();
+        resetState();
         queryClient.invalidateQueries("companyData");
       },
       onError: (error) => {
@@ -39,7 +73,7 @@ const AddCompanyModal = ({ open, handleClose }) => {
   );
 
   const onFinish = (values, actions) => {
-    addCompany.mutate(values);
+    edit ? editCompany.mutate(values) : addCompany.mutate(values);
     actions.setSubmitting(false);
   };
 
@@ -48,7 +82,7 @@ const AddCompanyModal = ({ open, handleClose }) => {
       open={open}
       onClose={() => {
         handleClose();
-        setError(false);
+        resetState();
       }}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
@@ -75,12 +109,14 @@ const AddCompanyModal = ({ open, handleClose }) => {
             marginBottom: "10px",
           }}
         >
-          <Typography variant="h5">Add Company</Typography>
+          <Typography variant="h5">
+            {edit ? "Edit Company" : "Add Company"}
+          </Typography>
           <Close
             fontSize="large"
             onClick={() => {
               handleClose();
-              setError(false);
+              resetState();
             }}
             sx={{ cursor: "pointer" }}
           />
@@ -107,9 +143,9 @@ const AddCompanyModal = ({ open, handleClose }) => {
         {/* Add Company Fields */}
         <Formik
           initialValues={{
-            name: "",
-            address: "",
-            phone_no: "",
+            name: editRowData?.name ?? "",
+            address: editRowData?.address ?? "",
+            phone_no: editRowData?.phone_no ?? "",
           }}
           validationSchema={validationSchema}
           onSubmit={onFinish}
@@ -124,6 +160,7 @@ const AddCompanyModal = ({ open, handleClose }) => {
           }) => (
             <form onSubmit={handleSubmit}>
               <Grid container spacing={3}>
+                {/* Company Name */}
                 <Grid item xs={12} md={6}>
                   <TextField
                     fullWidth
@@ -136,6 +173,7 @@ const AddCompanyModal = ({ open, handleClose }) => {
                     helperText={touched.name && errors.name}
                   />
                 </Grid>
+                {/* Company Phone Number */}
                 <Grid item xs={12} md={6}>
                   <TextField
                     fullWidth
@@ -148,6 +186,7 @@ const AddCompanyModal = ({ open, handleClose }) => {
                     helperText={touched.phone_no && errors.phone_no}
                   />
                 </Grid>
+                {/* Company Address */}
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
@@ -172,7 +211,7 @@ const AddCompanyModal = ({ open, handleClose }) => {
                   variant="text"
                   onClick={() => {
                     handleClose();
-                    setError(false);
+                    resetState();
                   }}
                   sx={{ marginRight: "10px" }}
                 >
@@ -183,7 +222,7 @@ const AddCompanyModal = ({ open, handleClose }) => {
                   variant="contained"
                   type="submit"
                 >
-                  {isSubmitting ? "Adding" : "Add"}
+                  {isSubmitting ? "Saving" : "Save"}
                 </LoadingButton>
               </Box>
             </form>
