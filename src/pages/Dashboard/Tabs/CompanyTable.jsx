@@ -1,16 +1,26 @@
 import React, { useState } from "react";
 import { Button, Box, IconButton, Popover } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import { Done, Close, MoreVert, Block, Edit } from "@mui/icons-material";
+import {
+  Done,
+  Close,
+  MoreVert,
+  Block,
+  Edit,
+  Delete,
+} from "@mui/icons-material";
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import { useSnackbar } from "notistack";
 import { getData, postData } from "../../../api/methods";
 import api from "../../../api/api";
+import DeleteCompanyModal from "../Modals/DeleteCompanyModal";
 
 const CompanyTable = ({ setOpenAddCompanyModal, setEdit, setEditRowData }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [rowID, setRowID] = useState();
   const [isActive, setIsActive] = useState();
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [deleteCompany, setDeleteCompany] = useState("");
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -24,6 +34,11 @@ const CompanyTable = ({ setOpenAddCompanyModal, setEdit, setEditRowData }) => {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const closeDeleteModal = () => {
+    setOpenDeleteModal(false);
+    setDeleteCompany("");
   };
 
   // Fetch the company data
@@ -49,6 +64,8 @@ const CompanyTable = ({ setOpenAddCompanyModal, setEdit, setEditRowData }) => {
       onSuccess: (data) => {
         handleClose();
         queryClient.invalidateQueries("companyData");
+        queryClient.invalidateQueries("productData");
+        queryClient.invalidateQueries("companyName");
         enqueueSnackbar("Successfully deactivated company", {
           variant: "success",
         });
@@ -71,6 +88,8 @@ const CompanyTable = ({ setOpenAddCompanyModal, setEdit, setEditRowData }) => {
       onSuccess: (data) => {
         handleClose();
         queryClient.invalidateQueries("companyData");
+        queryClient.invalidateQueries("productData");
+        queryClient.invalidateQueries("companyName");
         enqueueSnackbar("Successfully activated company", {
           variant: "success",
         });
@@ -86,14 +105,21 @@ const CompanyTable = ({ setOpenAddCompanyModal, setEdit, setEditRowData }) => {
 
   // Table Columns
   const columns = [
-    { field: "name", headerName: "Name", width: 150, flex: 1 },
-    { field: "address", headerName: "Address", width: 150, flex: 1 },
-    { field: "phone_no", headerName: "Phone Number", width: 150, flex: 1 },
+    { field: "name", headerName: "Name", flex: 0.8 },
+    { field: "address", headerName: "Address", flex: 1.3 },
+    {
+      field: "phone_no",
+      headerName: "Phone Number",
+      flex: 0.5,
+      align: "center",
+      headerAlign: "center",
+    },
     {
       field: "is_active",
       headerName: "Active",
-      width: 150,
-      flex: 1,
+      width: 80,
+      align: "center",
+      headerAlign: "center",
       renderCell: (params) => (
         <>
           {params.row.is_active === true ? (
@@ -107,8 +133,9 @@ const CompanyTable = ({ setOpenAddCompanyModal, setEdit, setEditRowData }) => {
     {
       field: "actions",
       headerName: "Actions",
-      width: 150,
-      flex: 1,
+      flex: 0.5,
+      align: "center",
+      headerAlign: "center",
       renderCell: (params) => (
         <>
           <IconButton
@@ -117,6 +144,7 @@ const CompanyTable = ({ setOpenAddCompanyModal, setEdit, setEditRowData }) => {
               setRowID(params.id);
               setIsActive(params.row.is_active);
               setEditRowData(params.row);
+              setDeleteCompany(params.row.name);
             }}
           >
             <MoreVert />
@@ -165,6 +193,21 @@ const CompanyTable = ({ setOpenAddCompanyModal, setEdit, setEditRowData }) => {
               >
                 Edit
               </Button>
+              <Button
+                variant="text"
+                startIcon={<Delete />}
+                sx={{
+                  display: "flex",
+                  justifyContent: "flex-start",
+                  color: "#000",
+                }}
+                onClick={() => {
+                  setOpenDeleteModal(true);
+                  handleClose();
+                }}
+              >
+                Delete
+              </Button>
             </Box>
           </Popover>
         </>
@@ -194,6 +237,13 @@ const CompanyTable = ({ setOpenAddCompanyModal, setEdit, setEditRowData }) => {
           />
         )}
       </Box>
+
+      <DeleteCompanyModal
+        open={openDeleteModal}
+        handleClose={closeDeleteModal}
+        deleteCompany={deleteCompany}
+        companyID={rowID}
+      />
     </Box>
   );
 };

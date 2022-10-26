@@ -8,4 +8,6 @@ module.exports = (router) => {
   router.post("/edit-company/:id", AppController.editCompany);
   router.get("/get-company-name", AppController.getCompanyName);
   router.post("/add-product", AppController.addProduct);
+  router.get("/get-product-data", AppController.getProductData);
+  router.post("/delete-company/:id", AppController.deleteCompany);
 };

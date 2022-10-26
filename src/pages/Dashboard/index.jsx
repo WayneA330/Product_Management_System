@@ -53,7 +53,7 @@ const Dashboard = () => {
       setEdit={setEditCompany}
       setEditRowData={setEditRowCompanyData}
     />,
-    <ProductTable />,
+    <ProductTable setOpenAddProductModal={setOpenAddProductModal} />,
   ];
 
   return (

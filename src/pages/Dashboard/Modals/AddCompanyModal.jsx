@@ -45,6 +45,7 @@ const AddCompanyModal = ({
         handleClose();
         resetState();
         queryClient.invalidateQueries("companyData");
+        queryClient.invalidateQueries("companyName");
         enqueueSnackbar("Successfully added company", {
           variant: "success",
         });
@@ -70,6 +71,8 @@ const AddCompanyModal = ({
         handleClose();
         resetState();
         queryClient.invalidateQueries("companyData");
+        queryClient.invalidateQueries("productData");
+        queryClient.invalidateQueries("companyName");
         enqueueSnackbar("Successfully edited company", {
           variant: "success",
         });

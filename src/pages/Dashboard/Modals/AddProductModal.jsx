@@ -23,9 +23,6 @@ import api from "../../../api/api";
 import { useSnackbar } from "notistack";
 
 const AddProductModal = ({ open, handleClose }) => {
-  const [length, setLength] = useState(0);
-  console.log(length);
-
   const { enqueueSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
 
@@ -50,7 +47,7 @@ const AddProductModal = ({ open, handleClose }) => {
     },
     {
       onSuccess: (data) => {
-        // queryClient.invalidateQueries("companyData");
+        queryClient.invalidateQueries("productData");
         handleClose();
         enqueueSnackbar("Successfully added product", {
           variant: "success",
