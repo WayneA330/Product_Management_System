@@ -6,6 +6,8 @@ const api = {
   DEACTIVATE_COMPANY: (id) => `${URL}/deactivate-company/${id}`,
   ACTIVATE_COMPANY: (id) => `${URL}/activate-company/${id}`,
   EDIT_COMPANY: (id) => `${URL}/edit-company/${id}`,
+  GET_COMPANY_NAME: `${URL}/get-company-name`,
+  ADD_PRODUCT: `${URL}/add-product`,
 };
 
 export default api;

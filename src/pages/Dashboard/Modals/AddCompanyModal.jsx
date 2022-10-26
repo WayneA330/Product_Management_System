@@ -7,6 +7,7 @@ import * as yup from "yup";
 import { postData } from "../../../api/methods";
 import api from "../../../api/api";
 import { useMutation, useQueryClient } from "react-query";
+import { useSnackbar } from "notistack";
 
 const AddCompanyModal = ({
   open,
@@ -16,14 +17,13 @@ const AddCompanyModal = ({
   setEdit,
   setEditRowData,
 }) => {
-  const [error, setError] = useState(false);
-
   const queryClient = useQueryClient();
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const resetState = () => {
     setEdit(false);
     setEditRowData(null);
-    setError(false);
   };
 
   const validationSchema = yup.object({
@@ -45,9 +45,14 @@ const AddCompanyModal = ({
         handleClose();
         resetState();
         queryClient.invalidateQueries("companyData");
+        enqueueSnackbar("Successfully added company", {
+          variant: "success",
+        });
       },
       onError: (error) => {
-        setError(true);
+        enqueueSnackbar("Error occured when adding company", {
+          variant: "error",
+        });
       },
     }
   );
@@ -65,9 +70,14 @@ const AddCompanyModal = ({
         handleClose();
         resetState();
         queryClient.invalidateQueries("companyData");
+        enqueueSnackbar("Successfully edited company", {
+          variant: "success",
+        });
       },
       onError: (error) => {
-        setError(true);
+        enqueueSnackbar("Error occured when editing company", {
+          variant: "error",
+        });
       },
     }
   );
@@ -84,8 +94,6 @@ const AddCompanyModal = ({
         handleClose();
         resetState();
       }}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description"
     >
       <Box
         sx={{
@@ -121,25 +129,6 @@ const AddCompanyModal = ({
             sx={{ cursor: "pointer" }}
           />
         </Box>
-        {/* Error Field */}
-        {error && (
-          <Box
-            sx={{
-              width: "325px",
-              bgcolor: "#ff0a00",
-              display: "flex",
-              justifyContent: "center",
-              margin: "auto",
-              marginBottom: "20px",
-              borderRadius: "5px",
-              p: 1,
-            }}
-          >
-            <Typography color="white">
-              An error occurred. Please try again later.
-            </Typography>
-          </Box>
-        )}
         {/* Add Company Fields */}
         <Formik
           initialValues={{
@@ -200,6 +189,7 @@ const AddCompanyModal = ({
                   />
                 </Grid>
               </Grid>
+              {/* Buttons */}
               <Box
                 sx={{
                   marginTop: "15px",

@@ -6,7 +6,6 @@ import {
   Tabs,
   Tab,
   Box,
-  Typography,
 } from "@mui/material";
 import { Store, Category } from "@mui/icons-material";
 import AddCompanyModal from "./Modals/AddCompanyModal";
@@ -19,8 +18,8 @@ const Dashboard = () => {
   const [openAddProductModal, setOpenAddProductModal] = useState(false);
   const [openAddCompanyModal, setOpenAddCompanyModal] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
-  const [edit, setEdit] = useState(false);
-  const [editRowData, setEditRowData] = useState(null);
+  const [editCompany, setEditCompany] = useState(false);
+  const [editRowCompanyData, setEditRowCompanyData] = useState(null);
 
   const handleCloseProduct = () => setOpenAddProductModal(false);
   const handleCloseCompany = () => setOpenAddCompanyModal(false);
@@ -51,8 +50,8 @@ const Dashboard = () => {
   const tabsContent = [
     <CompanyTable
       setOpenAddCompanyModal={setOpenAddCompanyModal}
-      setEdit={setEdit}
-      setEditRowData={setEditRowData}
+      setEdit={setEditCompany}
+      setEditRowData={setEditRowCompanyData}
     />,
     <ProductTable />,
   ];
@@ -87,10 +86,10 @@ const Dashboard = () => {
       <AddCompanyModal
         open={openAddCompanyModal}
         handleClose={handleCloseCompany}
-        edit={edit}
-        editRowData={editRowData}
-        setEdit={setEdit}
-        setEditRowData={setEditRowData}
+        edit={editCompany}
+        setEdit={setEditCompany}
+        editRowData={editRowCompanyData}
+        setEditRowData={setEditRowCompanyData}
       />
       <AddProductModal
         open={openAddProductModal}

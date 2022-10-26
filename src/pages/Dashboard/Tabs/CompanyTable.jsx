@@ -3,6 +3,7 @@ import { Button, Box, IconButton, Popover } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { Done, Close, MoreVert, Block, Edit } from "@mui/icons-material";
 import { useQuery, useMutation, useQueryClient } from "react-query";
+import { useSnackbar } from "notistack";
 import { getData, postData } from "../../../api/methods";
 import api from "../../../api/api";
 
@@ -10,6 +11,10 @@ const CompanyTable = ({ setOpenAddCompanyModal, setEdit, setEditRowData }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [rowID, setRowID] = useState();
   const [isActive, setIsActive] = useState();
+
+  const { enqueueSnackbar } = useSnackbar();
+
+  const queryClient = useQueryClient();
 
   const open = Boolean(anchorEl);
 
@@ -20,8 +25,6 @@ const CompanyTable = ({ setOpenAddCompanyModal, setEdit, setEditRowData }) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
-  const queryClient = useQueryClient();
 
   // Fetch the company data
   const { data } = useQuery(
@@ -46,9 +49,15 @@ const CompanyTable = ({ setOpenAddCompanyModal, setEdit, setEditRowData }) => {
       onSuccess: (data) => {
         handleClose();
         queryClient.invalidateQueries("companyData");
+        enqueueSnackbar("Successfully deactivated company", {
+          variant: "success",
+        });
       },
       onError: (error) => {
-        // console.log(error);
+        handleClose();
+        enqueueSnackbar("Error occured when deactivating company", {
+          variant: "error",
+        });
       },
     }
   );
@@ -62,9 +71,15 @@ const CompanyTable = ({ setOpenAddCompanyModal, setEdit, setEditRowData }) => {
       onSuccess: (data) => {
         handleClose();
         queryClient.invalidateQueries("companyData");
+        enqueueSnackbar("Successfully activated company", {
+          variant: "success",
+        });
       },
       onError: (error) => {
-        // console.log(error);
+        handleClose();
+        enqueueSnackbar("Error occured when activating company", {
+          variant: "error",
+        });
       },
     }
   );
@@ -167,14 +182,14 @@ const CompanyTable = ({ setOpenAddCompanyModal, setEdit, setEditRowData }) => {
           Add Company
         </Button>
       </Box>
-      <Box sx={{ height: 423, width: "100%" }}>
+      <Box sx={{ height: 475, width: "100%" }}>
         {data && (
           <DataGrid
             columns={columns}
             rows={data}
-            getRowId={(row) => row.company_id}
-            pageSize={6}
-            rowsPerPageOptions={[6]}
+            getRowId={(row) => row?.company_id}
+            pageSize={7}
+            rowsPerPageOptions={[7]}
             disableSelectionOnClick
           />
         )}

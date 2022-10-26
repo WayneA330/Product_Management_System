@@ -22,6 +22,7 @@ specifiers:
   morgan: ^1.10.0
   mssql: ^9.0.1
   nodemon: ^2.0.19
+  notistack: ^2.0.8
   react: ^18.2.0
   react-dom: ^18.2.0
   react-query: ^3.39.2
@@ -53,6 +54,7 @@ dependencies:
   morgan: 1.10.0
   mssql: 9.0.1
   nodemon: 2.0.19
+  notistack: 2.0.8_cc56alapomqwos3hjuzlsdnlam
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
   react-query: 3.39.2_biqbaboplfbrettd7655fr4n2y
@@ -7925,6 +7927,29 @@ packages:
   /normalize-url/6.1.0:
     resolution: {integrity: sha512-DlL+XwOy3NxAQ8xuC0okPgK46iuVNAK01YN7RueYBqqFeGsBjV9XmCAzAdgt+667bCl5kPh9EqKKDwnaPG1I7A==}
     engines: {node: '>=10'}
+    dev: false
+
+  /notistack/2.0.8_cc56alapomqwos3hjuzlsdnlam:
+    resolution: {integrity: sha512-/IY14wkFp5qjPgKNvAdfL5Jp6q90+MjgKTPh4c81r/lW70KeuX6b9pE/4f8L4FG31cNudbN9siiFS5ql1aSLRw==}
+    peerDependencies:
+      '@emotion/react': ^11.4.1
+      '@emotion/styled': ^11.3.0
+      '@mui/material': ^5.0.0
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
+    peerDependenciesMeta:
+      '@emotion/react':
+        optional: true
+      '@emotion/styled':
+        optional: true
+    dependencies:
+      '@emotion/react': 11.10.0_react@18.2.0
+      '@emotion/styled': 11.10.0_g566eayvhbit5eqxocdac5mhdm
+      '@mui/material': 5.10.1_tyh4ta3a3jg5wknldy4g2a7uiy
+      clsx: 1.2.1
+      hoist-non-react-statics: 3.3.2
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
     dev: false
 
   /npm-run-path/4.0.1:

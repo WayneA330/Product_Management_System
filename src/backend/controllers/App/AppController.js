@@ -3,6 +3,8 @@ const getCompanyData = require("./methods/getCompanyData");
 const deactivateCompany = require("./methods/deactivateCompany");
 const activateCompany = require("./methods/activateCompany");
 const editCompany = require("./methods/editCompany");
+const getCompanyName = require("./methods/getCompanyName");
+const addProduct = require("./methods/addProduct");
 
 const AppController = {
   addCompany,
@@ -10,6 +12,8 @@ const AppController = {
   deactivateCompany,
   activateCompany,
   editCompany,
+  getCompanyName,
+  addProduct,
 };
 
 module.exports = AppController;
