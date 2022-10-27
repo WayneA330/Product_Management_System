@@ -3,7 +3,7 @@ const db = {
   connection: {
     server: "localhost",
     user: "sa",
-    password: "****",
+    password: "Celestin2003.",
     port: 1433,
   },
   pool: {
