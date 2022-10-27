@@ -1,12 +1,31 @@
-import { Box, Button, IconButton } from "@mui/material";
-import React from "react";
-import { useQuery } from "react-query";
+import React, { useState } from "react";
+import { Box, Button, IconButton, Popover } from "@mui/material";
+import { useQuery, useMutation, useQueryClient } from "react-query";
 import api from "../../../api/api";
 import { Done, Close, MoreVert, Block, Edit } from "@mui/icons-material";
-import { getData } from "../../../api/methods";
+import { getData, postData } from "../../../api/methods";
+import { useSnackbar } from "notistack";
 import { DataGrid } from "@mui/x-data-grid";
 
 const ProductTable = ({ setOpenAddProductModal }) => {
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [rowID, setRowID] = useState();
+  const [isActive, setIsActive] = useState();
+
+  const { enqueueSnackbar } = useSnackbar();
+
+  const queryClient = useQueryClient();
+
+  const open = Boolean(anchorEl);
+
+  const handleClick = (e) => {
+    setAnchorEl(e.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   // Fetch the product data
   const { data } = useQuery(
     ["productData"],
@@ -17,6 +36,50 @@ const ProductTable = ({ setOpenAddProductModal }) => {
       },
       onError: (err) => {
         // console.log(err);
+      },
+    }
+  );
+
+  // Deactivate Mutation
+  const deactivateProduct = useMutation(
+    (id) => {
+      return postData({ url: api.DEACTIVATE_PRODUCT(id), body: {} });
+    },
+    {
+      onSuccess: (data) => {
+        handleClose();
+        queryClient.invalidateQueries("productData");
+        enqueueSnackbar("Successfully deactivated product", {
+          variant: "success",
+        });
+      },
+      onError: (error) => {
+        handleClose();
+        enqueueSnackbar("Error occured when deactivating product", {
+          variant: "error",
+        });
+      },
+    }
+  );
+
+  // Activate Mutation
+  const activateProduct = useMutation(
+    (id) => {
+      return postData({ url: api.ACTIVATE_PRODUCT(id), body: {} });
+    },
+    {
+      onSuccess: (data) => {
+        handleClose();
+        queryClient.invalidateQueries("productData");
+        enqueueSnackbar("Successfully activated product", {
+          variant: "success",
+        });
+      },
+      onError: (error) => {
+        handleClose();
+        enqueueSnackbar("Error occured when activating product", {
+          variant: "error",
+        });
       },
     }
   );
@@ -85,9 +148,42 @@ const ProductTable = ({ setOpenAddProductModal }) => {
       headerAlign: "center",
       renderCell: (params) => (
         <>
-          <IconButton>
+          <IconButton
+            onClick={(e) => {
+              handleClick(e);
+              setRowID(params.id);
+              setIsActive(params.row.is_active);
+            }}
+          >
             <MoreVert />
           </IconButton>
+          <Popover
+            open={open}
+            anchorEl={anchorEl}
+            onClose={() => {
+              handleClose();
+            }}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "left",
+            }}
+            elevation={1}
+          >
+            <Box sx={{ display: "flex", flexDirection: "column" }}>
+              <Button
+                variant="text"
+                startIcon={<Block />}
+                sx={{ color: "#000" }}
+                onClick={() => {
+                  isActive
+                    ? deactivateProduct.mutate(rowID)
+                    : activateProduct.mutate(rowID);
+                }}
+              >
+                {isActive ? "Deactivate" : "Activate"}
+              </Button>
+            </Box>
+          </Popover>
         </>
       ),
     },

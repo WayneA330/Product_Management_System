@@ -10,6 +10,8 @@ const api = {
   GET_COMPANY_NAME: `${URL}/get-company-name`,
   ADD_PRODUCT: `${URL}/add-product`,
   GET_PRODUCT_DATA: `${URL}/get-product-data`,
+  DEACTIVATE_PRODUCT: (id) => `${URL}/deactivate-product/${id}`,
+  ACTIVATE_PRODUCT: (id) => `${URL}/activate-product/${id}`,
 };
 
 export default api;

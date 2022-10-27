@@ -10,4 +10,6 @@ module.exports = (router) => {
   router.post("/add-product", AppController.addProduct);
   router.get("/get-product-data", AppController.getProductData);
   router.post("/delete-company/:id", AppController.deleteCompany);
+  router.post("/deactivate-product/:id", AppController.deactivateProduct);
+  router.post("/activate-product/:id", AppController.deactivateProduct);
 };

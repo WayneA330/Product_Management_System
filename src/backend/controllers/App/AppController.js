@@ -7,6 +7,8 @@ const getCompanyName = require("./methods/getCompanyName");
 const addProduct = require("./methods/addProduct");
 const getProductData = require("./methods/getProductData");
 const deleteCompany = require("./methods/deleteCompany");
+const deactivateProduct = require("./methods/deactivateProduct");
+const activateProduct = require("./methods/activateProduct");
 
 const AppController = {
   addCompany,
@@ -18,6 +20,8 @@ const AppController = {
   addProduct,
   getProductData,
   deleteCompany,
+  deactivateProduct,
+  activateProduct,
 };
 
 module.exports = AppController;
