@@ -2,15 +2,25 @@ import React, { useState } from "react";
 import { Box, Button, IconButton, Popover } from "@mui/material";
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import api from "../../../api/api";
-import { Done, Close, MoreVert, Block, Edit } from "@mui/icons-material";
+import {
+  Done,
+  Close,
+  MoreVert,
+  Block,
+  Edit,
+  Delete,
+} from "@mui/icons-material";
 import { getData, postData } from "../../../api/methods";
 import { useSnackbar } from "notistack";
 import { DataGrid } from "@mui/x-data-grid";
+import DeleteProductModal from "../Modals/DeleteProductModal";
 
 const ProductTable = ({ setOpenAddProductModal, setEdit, setEditRowData }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [rowID, setRowID] = useState();
   const [isActive, setIsActive] = useState();
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [deleteProduct, setDeleteProduct] = useState("");
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -24,6 +34,11 @@ const ProductTable = ({ setOpenAddProductModal, setEdit, setEditRowData }) => {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const closeDeleteModal = () => {
+    setOpenDeleteModal(false);
+    setDeleteProduct("");
   };
 
   // Fetch the product data
@@ -154,6 +169,7 @@ const ProductTable = ({ setOpenAddProductModal, setEdit, setEditRowData }) => {
               setRowID(params.id);
               setIsActive(params.row.is_active);
               setEditRowData(params.row);
+              setDeleteProduct(params.row.name);
             }}
           >
             <MoreVert />
@@ -202,6 +218,21 @@ const ProductTable = ({ setOpenAddProductModal, setEdit, setEditRowData }) => {
               >
                 Edit
               </Button>
+              <Button
+                variant="text"
+                startIcon={<Delete />}
+                sx={{
+                  display: "flex",
+                  justifyContent: "flex-start",
+                  color: "#000",
+                }}
+                onClick={() => {
+                  setOpenDeleteModal(true);
+                  handleClose();
+                }}
+              >
+                Delete
+              </Button>
             </Box>
           </Popover>
         </>
@@ -231,6 +262,16 @@ const ProductTable = ({ setOpenAddProductModal, setEdit, setEditRowData }) => {
           />
         )}
       </Box>
+
+      <DeleteProductModal
+        open={openDeleteModal}
+        handleClose={closeDeleteModal}
+        deleteProduct={deleteProduct}
+        productID={rowID}
+        setRowID={setRowID}
+        setEdit={setEdit}
+        setEditRowData={setEditRowData}
+      />
     </Box>
   );
 };

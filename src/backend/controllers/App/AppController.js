@@ -10,6 +10,7 @@ const deleteCompany = require("./methods/deleteCompany");
 const deactivateProduct = require("./methods/deactivateProduct");
 const activateProduct = require("./methods/activateProduct");
 const editProduct = require("./methods/editProduct");
+const deleteProduct = require("./methods/deleteProduct");
 
 const AppController = {
   addCompany,
@@ -24,6 +25,7 @@ const AppController = {
   deactivateProduct,
   activateProduct,
   editProduct,
+  deleteProduct,
 };
 
 module.exports = AppController;

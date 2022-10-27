@@ -13,4 +13,5 @@ module.exports = (router) => {
   router.post("/deactivate-product/:id", AppController.deactivateProduct);
   router.post("/activate-product/:id", AppController.deactivateProduct);
   router.post("/edit-product/:id", AppController.editProduct);
+  router.post("/delete-product/:id", AppController.deleteProduct);
 };

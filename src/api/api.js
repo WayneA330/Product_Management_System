@@ -13,6 +13,7 @@ const api = {
   DEACTIVATE_PRODUCT: (id) => `${URL}/deactivate-product/${id}`,
   ACTIVATE_PRODUCT: (id) => `${URL}/activate-product/${id}`,
   EDIT_PRODUCT: (id) => `${URL}/edit-product/${id}`,
+  DELETE_PRODUCT: (id) => `${URL}/delete-product/${id}`,
 };
 
 export default api;
