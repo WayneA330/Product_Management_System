@@ -243,6 +243,9 @@ const CompanyTable = ({ setOpenAddCompanyModal, setEdit, setEditRowData }) => {
         handleClose={closeDeleteModal}
         deleteCompany={deleteCompany}
         companyID={rowID}
+        setRowID={setRowID}
+        setEdit={setEdit}
+        setEditRowData={setEditRowData}
       />
     </Box>
   );

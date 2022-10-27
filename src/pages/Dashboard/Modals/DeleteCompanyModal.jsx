@@ -11,9 +11,18 @@ const DeleteCompanyModal = ({
   handleClose,
   deleteCompany,
   companyID,
+  setRowID,
+  setEdit,
+  setEditRowData,
 }) => {
   const { enqueueSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
+
+  const resetState = () => {
+    setRowID();
+    setEdit(false);
+    setEditRowData(null);
+  };
 
   const deleteCompanyFn = useMutation(
     (data) => {
@@ -22,6 +31,7 @@ const DeleteCompanyModal = ({
     {
       onSuccess: (data) => {
         handleClose();
+        resetState();
         queryClient.invalidateQueries("companyData");
         queryClient.invalidateQueries("productData");
         queryClient.invalidateQueries("companyName");
@@ -31,7 +41,7 @@ const DeleteCompanyModal = ({
       },
       onError: (error) => {
         handleClose();
-        enqueueSnackbar("Error occured when activating company", {
+        enqueueSnackbar("Error occured when deleting company", {
           variant: "error",
         });
       },

@@ -77,10 +77,10 @@ const AddProductModal = ({ open, handleClose }) => {
       .required("Barcode is required")
       .test(
         "len",
-        "Must be 12 characters",
+        "Must contain 12 numbers",
         (val) => val?.toString()?.length === 12 // .length does not work on numbers
       ),
-    company_id: yup.string().required("Barcode is required"),
+    company_id: yup.string().required("Manufacturer is required"),
   });
 
   const onFinish = (values, actions) => {

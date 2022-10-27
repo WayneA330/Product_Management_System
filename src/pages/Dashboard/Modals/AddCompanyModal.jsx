@@ -32,7 +32,12 @@ const AddCompanyModal = ({
     phone_no: yup
       .number()
       .typeError("Please enter numbers only")
-      .required("Phone Number is required"),
+      .required("Phone Number is required")
+      .test(
+        "len",
+        "Must contain 8 numbers",
+        (val) => val?.toString()?.length === 8 // .length does not work on numbers
+      ),
   });
 
   // Add Company Mutation
