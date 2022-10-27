@@ -7,7 +7,7 @@ import { getData, postData } from "../../../api/methods";
 import { useSnackbar } from "notistack";
 import { DataGrid } from "@mui/x-data-grid";
 
-const ProductTable = ({ setOpenAddProductModal }) => {
+const ProductTable = ({ setOpenAddProductModal, setEdit, setEditRowData }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [rowID, setRowID] = useState();
   const [isActive, setIsActive] = useState();
@@ -153,6 +153,7 @@ const ProductTable = ({ setOpenAddProductModal }) => {
               handleClick(e);
               setRowID(params.id);
               setIsActive(params.row.is_active);
+              setEditRowData(params.row);
             }}
           >
             <MoreVert />
@@ -162,6 +163,9 @@ const ProductTable = ({ setOpenAddProductModal }) => {
             anchorEl={anchorEl}
             onClose={() => {
               handleClose();
+              setRowID(params.id);
+              setEdit(false);
+              setEditRowData(null);
             }}
             anchorOrigin={{
               vertical: "bottom",
@@ -181,6 +185,22 @@ const ProductTable = ({ setOpenAddProductModal }) => {
                 }}
               >
                 {isActive ? "Deactivate" : "Activate"}
+              </Button>
+              <Button
+                variant="text"
+                startIcon={<Edit />}
+                sx={{
+                  display: "flex",
+                  justifyContent: "flex-start",
+                  color: "#000",
+                }}
+                onClick={() => {
+                  setEdit(true);
+                  setOpenAddProductModal(true);
+                  handleClose();
+                }}
+              >
+                Edit
               </Button>
             </Box>
           </Popover>

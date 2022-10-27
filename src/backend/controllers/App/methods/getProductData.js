@@ -3,7 +3,7 @@ const { knexDb } = require("../../../utils/routes.imports.utils");
 const getProductData = async (req, res) => {
   try {
     const response = await knexDb.raw(
-      `SELECT P.products_id, P.name, P.price, P.stock, P.bar_code, P.is_active, C.name as company_name
+      `SELECT P.products_id, P.name, P.price, P.stock, P.bar_code, P.is_active, P.company_id, C.name as company_name
     FROM [PMS].[dbo].[Products] P
     JOIN [PMS].[dbo].[Company] C
     ON P.company_id = C.company_id

@@ -22,9 +22,21 @@ import { getData, postData } from "../../../api/methods";
 import api from "../../../api/api";
 import { useSnackbar } from "notistack";
 
-const AddProductModal = ({ open, handleClose }) => {
+const AddProductModal = ({
+  open,
+  handleClose,
+  edit,
+  editRowData,
+  setEdit,
+  setEditRowData,
+}) => {
   const { enqueueSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
+
+  const resetState = () => {
+    setEdit(false);
+    setEditRowData(null);
+  };
 
   // Fetch Companies Name
   const { data } = useQuery(
@@ -48,6 +60,7 @@ const AddProductModal = ({ open, handleClose }) => {
     {
       onSuccess: (data) => {
         queryClient.invalidateQueries("productData");
+        resetState();
         handleClose();
         enqueueSnackbar("Successfully added product", {
           variant: "success",
@@ -55,6 +68,31 @@ const AddProductModal = ({ open, handleClose }) => {
       },
       onError: (error) => {
         enqueueSnackbar("Error occured when adding product", {
+          variant: "error",
+        });
+      },
+    }
+  );
+
+  // Edit Product Mutation
+  const editProduct = useMutation(
+    (data) => {
+      return postData({
+        url: api.EDIT_PRODUCT(editRowData?.products_id),
+        body: data,
+      });
+    },
+    {
+      onSuccess: (data) => {
+        queryClient.invalidateQueries("productData");
+        handleClose();
+        resetState();
+        enqueueSnackbar("Successfully edited product", {
+          variant: "success",
+        });
+      },
+      onError: (error) => {
+        enqueueSnackbar("Error occured when editing product", {
           variant: "error",
         });
       },
@@ -84,7 +122,7 @@ const AddProductModal = ({ open, handleClose }) => {
   });
 
   const onFinish = (values, actions) => {
-    addProduct.mutate(values);
+    edit ? editProduct.mutate(values) : addProduct.mutate(values);
     actions.setSubmitting(false);
   };
 
@@ -112,21 +150,26 @@ const AddProductModal = ({ open, handleClose }) => {
             marginBottom: "10px",
           }}
         >
-          <Typography variant="h5">Add Product</Typography>
+          <Typography variant="h5">
+            {edit ? "Edit Product" : "Add Product"}
+          </Typography>
           <Close
             fontSize="large"
-            onClick={handleClose}
+            onClick={() => {
+              handleClose();
+              resetState();
+            }}
             sx={{ cursor: "pointer" }}
           />
         </Box>
         {/* Add Product Fields */}
         <Formik
           initialValues={{
-            name: "",
-            price: "",
-            stock: "",
-            bar_code: "",
-            company_id: "",
+            name: editRowData?.name ?? "",
+            price: editRowData?.price ?? "",
+            stock: editRowData?.stock ?? "",
+            bar_code: editRowData?.bar_code ?? "",
+            company_id: editRowData?.company_id ?? "",
           }}
           validationSchema={validationSchema}
           onSubmit={onFinish}
@@ -245,6 +288,7 @@ const AddProductModal = ({ open, handleClose }) => {
                   variant="text"
                   onClick={() => {
                     handleClose();
+                    resetState();
                   }}
                   sx={{ marginRight: "10px" }}
                 >

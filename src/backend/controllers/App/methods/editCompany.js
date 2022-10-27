@@ -3,12 +3,13 @@ const { knexDb } = require("../../../utils/routes.imports.utils");
 const editCompany = async (req, res) => {
   try {
     const id = req.params.id;
+    const { name, address, phone_no } = req?.body;
 
     await knexDb(`[PMS].[dbo].[Company]`)
       .update({
-        name: req?.body?.name,
-        address: req?.body?.address,
-        phone_no: req?.body?.phone_no,
+        name,
+        address,
+        phone_no,
       })
       .where({
         company_id: id,
@@ -20,7 +21,7 @@ const editCompany = async (req, res) => {
     });
   } catch (err) {
     res.status(404).send({
-      message: "Error occured when editing when adding company!",
+      message: "Error occured when editing company!",
       payload: err,
     });
   }

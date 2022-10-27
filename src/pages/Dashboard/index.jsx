@@ -20,6 +20,10 @@ const Dashboard = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [editCompany, setEditCompany] = useState(false);
   const [editRowCompanyData, setEditRowCompanyData] = useState(null);
+  const [editProduct, setEditProduct] = useState(false);
+  const [editRowProductData, setEditRowProductData] = useState(null);
+
+  console.log({ editProduct, editRowProductData });
 
   const handleCloseProduct = () => setOpenAddProductModal(false);
   const handleCloseCompany = () => setOpenAddCompanyModal(false);
@@ -53,7 +57,11 @@ const Dashboard = () => {
       setEdit={setEditCompany}
       setEditRowData={setEditRowCompanyData}
     />,
-    <ProductTable setOpenAddProductModal={setOpenAddProductModal} />,
+    <ProductTable
+      setOpenAddProductModal={setOpenAddProductModal}
+      setEdit={setEditProduct}
+      setEditRowData={setEditRowProductData}
+    />,
   ];
 
   return (
@@ -94,6 +102,10 @@ const Dashboard = () => {
       <AddProductModal
         open={openAddProductModal}
         handleClose={handleCloseProduct}
+        edit={editProduct}
+        setEdit={setEditProduct}
+        editRowData={editRowProductData}
+        setEditRowData={setEditRowProductData}
       />
     </>
   );
